@@ -2,8 +2,12 @@ use bevy::{
     core_pipeline::{bloom::BloomSettings, tonemapping::Tonemapping},
     diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin},
     prelude::*,
+    window::WindowMode,
 };
 
+#[cfg(target_arch = "wasm32")]
+const STAR_LIMIT: usize = 200; // Smaller number of stars for web
+#[cfg(not(target_arch = "wasm32"))]
 const STAR_LIMIT: usize = 2000;
 
 #[derive(Component)]
@@ -14,7 +18,14 @@ struct Star {
 fn main() {
     App::new()
         .insert_resource(ClearColor(Color::rgb(0.0, 0.0, 0.0)))
-        .add_plugins(DefaultPlugins)
+        .add_plugins(DefaultPlugins.set(WindowPlugin {
+            primary_window: Some(Window {
+                resizable: false,
+                mode: WindowMode::BorderlessFullscreen,
+                ..default()
+            }),
+            ..default()
+        }))
         .add_systems(Startup, setup)
         .add_systems(Update, bevy::window::close_on_esc)
         .add_systems(Update, star_spawner)
