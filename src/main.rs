@@ -1,9 +1,10 @@
 use bevy::{
     core_pipeline::{bloom::BloomSettings, tonemapping::Tonemapping},
+    diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin},
     prelude::*,
 };
 
-const STAR_LIMIT: usize = 5000;
+const STAR_LIMIT: usize = 2000;
 
 #[derive(Component)]
 struct Star {
@@ -19,6 +20,8 @@ fn main() {
         .add_systems(Update, star_spawner)
         .add_systems(Update, star_mover)
         .add_systems(Update, star_deleter)
+        .add_plugins(LogDiagnosticsPlugin::default())
+        .add_plugins(FrameTimeDiagnosticsPlugin)
         .run();
 }
 
